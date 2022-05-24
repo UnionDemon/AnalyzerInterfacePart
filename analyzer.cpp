@@ -148,9 +148,28 @@ void Analyzer::on_pushButton_2_clicked()
 void Analyzer::on_pushButton_clicked()
 {
     QString file_name = this->ui->lineEdit->text();
-    QFile program = QFile(file_name);
-    program.open(QIODevice::ReadOnly | QIODevice::Text);
-    QString data_file = QString(program.readAll());
+    //QFile program = QFile(file_name);
+
+    QFile inputFile(file_name);
+    int i=0;
+    if (inputFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+       QTextStream in(&inputFile);
+       QString code;
+
+       while (!in.atEnd())
+       {
+          code += QString::number(i)+'\t'+in.readLine()+'\n';
+          i++;
+       }
+       ui->textEdit->setText(code);
+       inputFile.close();
+    }
+
+
+
+    //program.open(QIODevice::ReadOnly | QIODevice::Text);
+    //QString data_file = QString(program.readAll());
 
     QByteArray arr = file_name.toLocal8Bit();
     const char * file = arr.constData();
@@ -165,14 +184,15 @@ void Analyzer::on_pushButton_clicked()
     int argc = 2;
 
     AnalyzerMain(argc, argv);
-    //ui->textEdit->setText(QString::fromLocal8Bit(result));
-    ui->textEdit->setText(data_file);
+
+    //ui->textEdit->setText(data_file);
 }
 
 void Analyzer::showErrors(std::list<error*> errors)
 {
     QStandardItem* item = 0;
      int i = 0;
+     std::list<int> lineNumbers;
      for (auto& it:errors)
      {
         model->insertRow(model->rowCount());
@@ -180,6 +200,10 @@ void Analyzer::showErrors(std::list<error*> errors)
         model->setItem(i,0,item);
         item = new QStandardItem(QString::number((it)->line));
         model->setItem(i,1,item);
+
+        lineNumbers.push_back((it)->line);
+        errorBackground(lineNumbers);
+
         item = new QStandardItem(QString::number((it)->col));
         model->setItem(i,2,item);
         item = new QStandardItem(QString::fromLocal8Bit((it)->message));
@@ -192,6 +216,7 @@ void Analyzer::showErrors(std::list<error*> errors)
         ui->tableView->horizontalHeader()->setStretchLastSection(true);
         ui->tableView->setShowGrid(true);
         ui->tableView->setGridStyle(Qt::DashLine);
+
 }
 
 void Analyzer::showTetrads(std::list<Tetrad*> tetrads)
@@ -219,4 +244,25 @@ void Analyzer::showTetrads(std::list<Tetrad*> tetrads)
         ui->tableView_2->horizontalHeader()->setStretchLastSection(true);
         ui->tableView_2->setShowGrid(true);
         ui->tableView_2->setGridStyle(Qt::DashLine);
+}
+
+void Analyzer::errorBackground(std::list<int> lineNumbers)
+{
+    QList<QTextEdit::ExtraSelection> selection;
+    QTextEdit::ExtraSelection ex;
+    QTextCursor cursor = QTextCursor(ui->textEdit->document());
+    for (auto it:lineNumbers)
+    {
+        cursor.movePosition(QTextCursor::Start);
+        cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, it);
+        cursor.select(QTextCursor::LineUnderCursor);
+        ex.cursor = cursor;
+        QTextCharFormat format;
+        format.setBackground(Qt::red);
+        ex.cursor = cursor;
+        ex.format = format;
+        QList<QTextEdit::ExtraSelection>() << selection;
+        selection.append(ex);
+    }
+    ui->textEdit->setExtraSelections(selection);
 }

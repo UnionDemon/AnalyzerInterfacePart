@@ -31,6 +31,7 @@ private slots:
 
     void showTetrads(std::list<Tetrad*> tetrads);//функция обработки тетрад
 
+    void errorBackground(std::list<int> lineNumber);
 private:
     Ui::Analyzer *ui;
     QStandardItemModel *model;
