@@ -5,6 +5,7 @@
 #include "clang/AST/AST.h"
 #include "clang/AST/Stmt.h"
 #include<string>
+#include <sstream>
 
 using namespace clang;
 
@@ -64,7 +65,7 @@ public:
 	void setTypeOp(OperandType type);
 	void setCompareType(CompareType type);
 
-	void print();
+	std::string print();
 };
 
 struct Location {
@@ -82,7 +83,7 @@ public:
 
 	Location* location;
 
-	void print();
+	std::string print();
 
 	Tetrad();
 

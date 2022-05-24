@@ -48,7 +48,7 @@ private:
 	void interpretTetrads(const std::list<Tetrad*>& tetrads);
 	void handleTetrad(Tetrad* tetrad);
 	void handleDereference(Tetrad* tetrad);
-	void handleDereferenceArrow(Tetrad* tetrad);
+	void handleArrowDeref(Tetrad* tetrad);
 	void handleAssign(Tetrad* tetrad);
 	void handleSignedIntegerOverflow(Tetrad* tetrad);
 	void addPointersToTable(Tetrad* tetrad);

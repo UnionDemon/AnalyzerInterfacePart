@@ -27,10 +27,13 @@ private slots:
 
     void on_pushButton_clicked();
 
-    void addErrors(std::list<error*> errors);//функция обработки ошибок
+    void showErrors(std::list<error*> errors);//функция обработки ошибок
+
+    void showTetrads(std::list<Tetrad*> tetrads);//функция обработки тетрад
 
 private:
     Ui::Analyzer *ui;
     QStandardItemModel *model;
+    QStandardItemModel *model1;
 };
 #endif // ANALYZER_H

@@ -5,6 +5,7 @@
 
 #include <string>
 #include <iostream>
+#include <sstream>
 
 // global functions
 extern std::string nodeName(Stmt* node);
@@ -960,94 +961,96 @@ void pseudoCodeGenerator::print()
 	}
 }
 
-void Tetrad::print()
+std::string Tetrad::print()
 {
+	std::stringstream output;
 	if (!g_ast_complement.isFakeNode(astNode)) {
 		Stmt* realStmt = static_cast<Stmt*>(astNode);
-		std::cout << nodeName(realStmt) << " ";
+		output << nodeName(realStmt) << " ";
 	}
-	
 
 	if (operation == OperationType::jmp) {
-		std::cout << "jmp " << labelNumber << " ";
+		output << "jmp " << labelNumber << " ";
 	}
 	if (operation == OperationType::jmpOnFalse) {
-		std::cout << "jmpOnFalse " << labelNumber << " ";
+		output << "jmpOnFalse " << labelNumber << " ";
 	}
 	if (operation == OperationType::label) {
-		std::cout << "label "<< labelNumber << " ";
+		output << "label "<< labelNumber << " ";
 	}
 	if (operation == OperationType::dereference) {
-		std::cout << "dereference " << " ";
+		output << "dereference " << " ";
 	}
 	if (operation == OperationType::returnStmt) {
-		std::cout << "return " << " ";
+		output << "return " << " ";
 	}
 	if (operation == OperationType::assign) {
-		std::cout << "assign " << " ";
+		output << "assign " << " ";
 	}
 	if (operation == OperationType::lessThan) {
-		std::cout << "lessThan " << " ";
+		output << "lessThan " << " ";
 	}
 	if (operation == OperationType::arrowDeref) {
-		std::cout << "arrowDeref " << " ";
+		output << "arrowDeref " << " ";
 	}
 	if (operation == OperationType::other) {
-		std::cout << "other ";
+		output << "other ";
 	}
 	for (auto it = operands.begin(); it != operands.end(); it++) {
-		(*it)->print();
+		output << (*it)->print();
 	}
-	std::cout << std::endl;
+	return output.str();
 }
 
-void Operand::print()
+std::string Operand::print()
 {
-	std::cout << "[";
-	std::cout << nodeName(astNode) << " ";
+	std::stringstream output;
+	output << "[";
+	output << nodeName(astNode) << " ";
 	if (source == OperandSource::stack)
 	{
-		std::cout << "stack ";
+		output << "stack ";
 	}
 	if (source == OperandSource::object)
 	{
-		std::cout << "object ";
+		output << "object ";
 	}
 	if (typeop == OperandType::other)
 	{
-		std::cout << "other ";
+		output << "other ";
 	}
 	if (typeop == OperandType::pointer)
 	{
-		std::cout << "pointer ";
+		output << "pointer ";
 	}
 	if (typeop == OperandType::integer)
 	{
-		std::cout << "integer ";
+		output << "integer ";
 	}
 	if (typeop == OperandType::nullptrLiteral)
 	{
-		std::cout << "nullptrLiteral ";
+		output << "nullptrLiteral ";
 	}
 	if (typeop == OperandType::ptrNullCheck)
 	{
-		std::cout << "ptrNullCheck ";
+		output << "ptrNullCheck ";
 	}
 	if (typeop == OperandType::address)
 	{
-		std::cout << "address ";
+		output << "address ";
 	}
 	if (typeop == OperandType::integerSum) {
-		std::cout << "integerSum " << " ";
+		output << "integerSum " << " ";
 	}
 	if (comparison == CompareType::eq)
 	{
-		std::cout << "equal ";
+		output << "equal ";
 	}
 	if (comparison == CompareType::ne)
 	{
-		std::cout << "not equal ";
+		output << "not equal ";
 	}
-	std::cout << variable << " ";
-	std::cout << "]";
+	output << variable << " ";
+	output << "]";
+	return output.str();
 }

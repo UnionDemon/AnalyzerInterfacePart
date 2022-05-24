@@ -79,7 +79,7 @@ void Interpreter::handleTetrad(Tetrad* tetrad)
 	}
 	if (tetrad->operation == OperationType::arrowDeref)
 	{
-		handleDereferenceArrow(tetrad);
+		handleArrowDeref(tetrad);
 	}
 	if (tetrad->operation == OperationType::lessThan)
 	{
@@ -145,7 +145,7 @@ void Interpreter::handleDereference(Tetrad* tetrad)
 	}
 }
 
-void Interpreter::handleDereferenceArrow(Tetrad* tetrad)
+void Interpreter::handleArrowDeref(Tetrad* tetrad)
 {
 	auto firstIt = tetrad->operands.begin();
 	std::string variable = (*tetrad->operands.begin())->getVarName();

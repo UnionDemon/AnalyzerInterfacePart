@@ -96,11 +96,13 @@ void Analyzer::AnalyzerMain(int argc, const char** argv) {
         auto actionFactory = newFrontendActionFactory<ExampleFrontendAction>();
         int result = Tool.run(actionFactory.get());
         g_codegenerator.print();
+        std::list<Tetrad*> tetrads = g_codegenerator.getPseudoCode();
+        showTetrads(g_codegenerator.getPseudoCode());
         controlFlowGraph cfg(g_codegenerator.getPseudoCode());
         cfg.print();
         Interpreter interpreter(&cfg);
         interpreter.run();
-        addErrors(interpreter.getErrors());
+        showErrors(interpreter.getErrors());
 }
 
 //========================================================================================
@@ -116,6 +118,15 @@ Analyzer::Analyzer(QWidget *parent)
     model->setHeaderData(2, Qt::Horizontal, "Column");
     model->setHeaderData(3, Qt::Horizontal, "Message");
     ui->tableView->setModel(model);
+
+    model1 = new QStandardItemModel(0,1,this);
+    model1->setHeaderData(0, Qt::Horizontal, "Tetrad List");
+    /*model->setHeaderData(1, Qt::Horizontal, "Operation type");
+    model->setHeaderData(2, Qt::Horizontal, "First operand");
+    model->setHeaderData(3, Qt::Horizontal, "First operand type");
+    model->setHeaderData(4, Qt::Horizontal, "Second operand");
+    model->setHeaderData(5, Qt::Horizontal, "Second operand type");*/
+    ui->tableView_2->setModel(model1);
 }
 
 Analyzer::~Analyzer()
@@ -154,11 +165,11 @@ void Analyzer::on_pushButton_clicked()
     int argc = 2;
 
     AnalyzerMain(argc, argv);
-
+    //ui->textEdit->setText(QString::fromLocal8Bit(result));
     ui->textEdit->setText(data_file);
 }
 
-void Analyzer::addErrors(std::list<error*> errors)
+void Analyzer::showErrors(std::list<error*> errors)
 {
     QStandardItem* item = 0;
      int i = 0;
@@ -181,4 +192,31 @@ void Analyzer::addErrors(std::list<error*> errors)
         ui->tableView->horizontalHeader()->setStretchLastSection(true);
         ui->tableView->setShowGrid(true);
         ui->tableView->setGridStyle(Qt::DashLine);
+}
+
+void Analyzer::showTetrads(std::list<Tetrad*> tetrads)
+{
+    QStandardItem* item = 0;
+     int i = 0;
+     for (auto& it:tetrads)
+     {
+        model1->insertRow(model1->rowCount());
+        QString tetradInfo =  QString::fromStdString((it)->print());
+        item = new QStandardItem(tetradInfo);
+        model1->setItem(i,0,item);
+        /*
+        item = new QStandardItem(QString::number((it)->line));
+        model->setItem(i,1,item);
+        item = new QStandardItem(QString::number((it)->col));
+        model->setItem(i,2,item);
+        item = new QStandardItem(QString::fromLocal8Bit((it)->message));
+        model->setItem(i,3,item);*/
+        i++;
+     }
+        ui->tableView_2->setModel(model1);
+        ui->tableView_2->show();
+        ui->tableView_2->resizeColumnsToContents();
+        ui->tableView_2->horizontalHeader()->setStretchLastSection(true);
+        ui->tableView_2->setShowGrid(true);
+        ui->tableView_2->setGridStyle(Qt::DashLine);
 }
