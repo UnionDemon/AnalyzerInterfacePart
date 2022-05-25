@@ -21,6 +21,7 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <map>
 
 #include <sstream>
 
@@ -102,7 +103,7 @@ void Analyzer::AnalyzerMain(int argc, const char** argv) {
         showTetrads(g_codegenerator.getPseudoCode());
         controlFlowGraph cfg(g_codegenerator.getPseudoCode());
         showBasicBlocks(cfg.getBlocks());
-
+        showEdges(cfg.getEdges());
         Interpreter interpreter(&cfg);
         interpreter.run();
         showErrors(interpreter.getErrors());
@@ -127,6 +128,12 @@ Analyzer::Analyzer(QWidget *parent)
     model2 = new QStandardItemModel(0,1,this);
     model2->setHeaderData(0, Qt::Horizontal, "Basic Block List");
     ui->tableView_4->setModel(model2);
+
+    model3 = new QStandardItemModel(0,3,this);
+    model3->setHeaderData(0, Qt::Horizontal, "From Basic Block");
+    model3->setHeaderData(1, Qt::Horizontal, "To Basic Block");
+    model3->setHeaderData(2, Qt::Horizontal, "To Basic Block");
+    ui->tableView_3->setModel(model3);
 }
 
 Analyzer::~Analyzer()
@@ -137,7 +144,7 @@ Analyzer::~Analyzer()
 
 void Analyzer::on_pushButton_2_clicked()
 {
-    QString file_name = QFileDialog::getOpenFileName(this,"Открыть","..","File c++ (*.cpp, *.c)");
+    QString file_name = QFileDialog::getOpenFileName(this,"Открыть","..","File c/c++ (*.cpp *.c)");
 
     if(!file_name.isNull())
         this->ui->lineEdit->setText(file_name);
@@ -150,7 +157,7 @@ void Analyzer::on_pushButton_clicked()
     QString file_name = this->ui->lineEdit->text();
 
     QFile inputFile(file_name);
-    int i=0;
+    int i=1;
     if (inputFile.open(QIODevice::ReadOnly | QIODevice::Text))
     {
        QTextStream in(&inputFile);
@@ -193,7 +200,9 @@ void Analyzer::showErrors(std::list<error*> errors)
         item = new QStandardItem(QString::number((it)->line));
         model->setItem(i,1,item);
 
-        lineNumbers.push_back((it)->line);
+        int lineNumber = (it)->line;
+        lineNumber--;
+        lineNumbers.push_back(lineNumber);
         errorBackground(lineNumbers);
 
         item = new QStandardItem(QString::number((it)->col));
@@ -248,6 +257,39 @@ void Analyzer::showBasicBlocks(std::list<BasicBlock*> basicBlocks)
         ui->tableView_4->horizontalHeader()->setStretchLastSection(true);
         ui->tableView_4->setShowGrid(true);
         ui->tableView_4->verticalHeader()->setVisible(false);
+}
+
+void Analyzer::showEdges(std::map<int, std::list<edge*>>& edges)
+{
+    QStandardItem* item = 0;
+     int i = 0;
+     for (auto& it:edges)
+     {
+        model3->insertRow(model3->rowCount());
+        item = new QStandardItem(QString::number(it.first));
+        model3->setItem(i,0,item);
+
+        auto firstIt = it.second.begin();
+        auto secondIt = firstIt;
+        secondIt++;
+
+        item = new QStandardItem(QString::number((*firstIt)->getDestination()->getId()));
+        model3->setItem(i,1,item);
+
+        if (secondIt != it.second.end())
+        {
+            item = new QStandardItem(QString::number((*secondIt)->getDestination()->getId()));
+            model3->setItem(i,2,item);
+        }
+
+        i++;
+     }
+        ui->tableView_3->setModel(model3);
+        ui->tableView_3->show();
+        ui->tableView_3->resizeColumnsToContents();
+        //ui->tableView_3->horizontalHeader()->setStretchLastSection(true);
+        ui->tableView_3->setShowGrid(true);
+        ui->tableView_3->verticalHeader()->setVisible(false);
 }
 
 void Analyzer::errorBackground(std::list<int> lineNumbers)

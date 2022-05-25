@@ -33,6 +33,8 @@ private slots:
 
     void showBasicBlocks(std::list<BasicBlock*> basicBlocks);//функция обработки базовых блоков
 
+    void showEdges(std::map<int, std::list<edge*>>& edges);//функция обработки дуг
+
     void errorBackground(std::list<int> lineNumber);//подсвет ошибок
 
     void on_action_triggered();//вызов справки "Руководство пользователя"
@@ -44,5 +46,6 @@ private:
     QStandardItemModel *model;
     QStandardItemModel *model1;
     QStandardItemModel *model2;
+    QStandardItemModel *model3;
 };
 #endif // ANALYZER_H
