@@ -41,7 +41,7 @@
       <item>
        <widget class="QTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="tab">
          <attribute name="title">
@@ -68,6 +68,9 @@
                 <pointsize>10</pointsize>
                </font>
               </property>
+              <property name="gridStyle">
+               <enum>Qt::SolidLine</enum>
+              </property>
              </widget>
             </item>
            </layout>
@@ -87,6 +90,9 @@
               <pointsize>10</pointsize>
              </font>
             </property>
+            <property name="gridStyle">
+             <enum>Qt::SolidLine</enum>
+            </property>
            </widget>
           </item>
          </layout>
@@ -97,7 +103,10 @@
          </attribute>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout_7">
+           <layout class="QVBoxLayout" name="verticalLayout_7"/>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_8">
             <item>
              <widget class="QLabel" name="label">
               <property name="text">
@@ -106,12 +115,18 @@
              </widget>
             </item>
             <item>
-             <widget class="QTableWidget" name="tableWidget"/>
+             <widget class="QTableView" name="tableView_4">
+              <property name="font">
+               <font>
+                <family>Consolas</family>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
+              <property name="gridStyle">
+               <enum>Qt::SolidLine</enum>
+              </property>
+             </widget>
             </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout_8">
             <item>
              <widget class="QLabel" name="label_2">
               <property name="text">
@@ -120,7 +135,17 @@
              </widget>
             </item>
             <item>
-             <widget class="QTableView" name="tableView_3"/>
+             <widget class="QTableView" name="tableView_3">
+              <property name="font">
+               <font>
+                <family>Consolas</family>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
+              <property name="gridStyle">
+               <enum>Qt::SolidLine</enum>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>

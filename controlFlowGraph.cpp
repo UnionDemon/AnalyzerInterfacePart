@@ -88,38 +88,30 @@ void controlFlowGraph::addBasicBlock(const std::list<Tetrad*>& tetrads) {
 	addBlockByLabel(newBB);
 }
 
-void controlFlowGraph::print()
+std::string controlFlowGraph::print()
 {
+	std::stringstream output;
 	for (auto it = cfg.begin(); it != cfg.end(); it++)
 	{
-		(*it)->print();
+		output << (*it)->print();
 	}
 
-	std::cout << "\n\n\nEdges:" << std::endl;
+	return output.str();
+}
+
+std::string controlFlowGraph::printEdges()
+{
+	std::stringstream output;
+	output << "\n\n\nEdges:" << std::endl;
 	for (auto it = edges.begin(); it != edges.end(); it++) {
-		std::cout << it->first << ": ";
+		output << it->first << ": ";
 		for (auto e = it->second.begin(); e != it->second.end(); e++) {
-			std::cout << " " << (*e)->getDestination()->getId();
-
-			if ((*e)->isNullptrCheck()) {
-				std::string comparison;
-				if ((*e)->getCompareType() == CompareType::eq) {
-					comparison = "eq";
-				}
-				else if ((*e)->getCompareType() == CompareType::ne) {
-					comparison = "ne";
-				}
-				else {
-					comparison = "none";
-				}
-
-				std::cout << "[" << (*e)->getVarName() << " " << comparison << "]";
-			}
-
-			std::cout << " ";
+			output << " " << (*e)->getDestination()->getId();
+			output << " ";
 		}
-		std::cout << std::endl;
+		output << std::endl;
 	}
+	return output.str();
 }
 
 void controlFlowGraph::addBlockByLabel(BasicBlock* bb)
@@ -230,13 +222,14 @@ std::string edge::getVarName() {
 	return variable;
 }
 
-void BasicBlock::print()
+std::string BasicBlock::print()
 {
-	std::cout << "\n\n______ #" << id << " _____________\n";
+	std::stringstream output;
+	output << "Basic Block #" << id << std::endl;
 	for (auto it = instructions.begin(); it != instructions.end(); it++)
 	{
-		(*it)->print();
+		output << (*it)->print() << std::endl;
 	}
-	std::cout << "___________________\n\n";
+	return output.str();
 }
 

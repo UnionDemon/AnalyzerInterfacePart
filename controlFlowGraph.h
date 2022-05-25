@@ -13,7 +13,7 @@ public:
 	int getId();
 	const std::list<Tetrad*>& getTetrads();
 
-	void print();
+	std::string print();
 };
 
 class edge {
@@ -55,7 +55,8 @@ private:
 
 public: 
 	controlFlowGraph(const std::list<Tetrad*> &pseudoCode);
-	void print();
+	std::string print();
+	std::string printEdges();
 
 	const std::list<BasicBlock*>& getBlocks();
 	std::map<int, std::list<edge*>>& getEdges();

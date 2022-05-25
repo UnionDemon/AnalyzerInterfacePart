@@ -31,10 +31,18 @@ private slots:
 
     void showTetrads(std::list<Tetrad*> tetrads);//функция обработки тетрад
 
-    void errorBackground(std::list<int> lineNumber);
+    void showBasicBlocks(std::list<BasicBlock*> basicBlocks);//функция обработки базовых блоков
+
+    void errorBackground(std::list<int> lineNumber);//подсвет ошибок
+
+    void on_action_triggered();//вызов справки "Руководство пользователя"
+
+    void on_action_2_triggered();//вызов справки "О программе"
+
 private:
     Ui::Analyzer *ui;
     QStandardItemModel *model;
     QStandardItemModel *model1;
+    QStandardItemModel *model2;
 };
 #endif // ANALYZER_H

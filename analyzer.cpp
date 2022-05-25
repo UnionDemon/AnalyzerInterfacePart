@@ -24,6 +24,8 @@
 
 #include <sstream>
 
+#include <QDesktopServices>
+
 using namespace std;
 using namespace clang;
 using namespace clang::driver;
@@ -86,7 +88,7 @@ public:
 static cl::OptionCategory MyToolCategory("My tool options");
 
 void Analyzer::AnalyzerMain(int argc, const char** argv) {
-    // parse the command-line args passed to your code
+        // parse the command-line args passed to your code
         llvm::Expected<CommonOptionsParser> op =
             CommonOptionsParser::create(argc, argv, MyToolCategory);
         // create a new Clang Tool instance (a LibTooling environment)
@@ -99,13 +101,12 @@ void Analyzer::AnalyzerMain(int argc, const char** argv) {
         std::list<Tetrad*> tetrads = g_codegenerator.getPseudoCode();
         showTetrads(g_codegenerator.getPseudoCode());
         controlFlowGraph cfg(g_codegenerator.getPseudoCode());
-        cfg.print();
+        showBasicBlocks(cfg.getBlocks());
+
         Interpreter interpreter(&cfg);
         interpreter.run();
         showErrors(interpreter.getErrors());
 }
-
-//========================================================================================
 
 Analyzer::Analyzer(QWidget *parent)
     : QMainWindow(parent)
@@ -121,12 +122,11 @@ Analyzer::Analyzer(QWidget *parent)
 
     model1 = new QStandardItemModel(0,1,this);
     model1->setHeaderData(0, Qt::Horizontal, "Tetrad List");
-    /*model->setHeaderData(1, Qt::Horizontal, "Operation type");
-    model->setHeaderData(2, Qt::Horizontal, "First operand");
-    model->setHeaderData(3, Qt::Horizontal, "First operand type");
-    model->setHeaderData(4, Qt::Horizontal, "Second operand");
-    model->setHeaderData(5, Qt::Horizontal, "Second operand type");*/
     ui->tableView_2->setModel(model1);
+
+    model2 = new QStandardItemModel(0,1,this);
+    model2->setHeaderData(0, Qt::Horizontal, "Basic Block List");
+    ui->tableView_4->setModel(model2);
 }
 
 Analyzer::~Analyzer()
@@ -137,7 +137,7 @@ Analyzer::~Analyzer()
 
 void Analyzer::on_pushButton_2_clicked()
 {
-    QString file_name = QFileDialog::getOpenFileName(this,"Открыть","..","File c++ (*.cpp)");
+    QString file_name = QFileDialog::getOpenFileName(this,"Открыть","..","File c++ (*.cpp, *.c)");
 
     if(!file_name.isNull())
         this->ui->lineEdit->setText(file_name);
@@ -148,7 +148,6 @@ void Analyzer::on_pushButton_2_clicked()
 void Analyzer::on_pushButton_clicked()
 {
     QString file_name = this->ui->lineEdit->text();
-    //QFile program = QFile(file_name);
 
     QFile inputFile(file_name);
     int i=0;
@@ -166,11 +165,6 @@ void Analyzer::on_pushButton_clicked()
        inputFile.close();
     }
 
-
-
-    //program.open(QIODevice::ReadOnly | QIODevice::Text);
-    //QString data_file = QString(program.readAll());
-
     QByteArray arr = file_name.toLocal8Bit();
     const char * file = arr.constData();
 
@@ -184,8 +178,6 @@ void Analyzer::on_pushButton_clicked()
     int argc = 2;
 
     AnalyzerMain(argc, argv);
-
-    //ui->textEdit->setText(data_file);
 }
 
 void Analyzer::showErrors(std::list<error*> errors)
@@ -215,8 +207,6 @@ void Analyzer::showErrors(std::list<error*> errors)
         ui->tableView->resizeColumnsToContents();
         ui->tableView->horizontalHeader()->setStretchLastSection(true);
         ui->tableView->setShowGrid(true);
-        ui->tableView->setGridStyle(Qt::DashLine);
-
 }
 
 void Analyzer::showTetrads(std::list<Tetrad*> tetrads)
@@ -229,13 +219,6 @@ void Analyzer::showTetrads(std::list<Tetrad*> tetrads)
         QString tetradInfo =  QString::fromStdString((it)->print());
         item = new QStandardItem(tetradInfo);
         model1->setItem(i,0,item);
-        /*
-        item = new QStandardItem(QString::number((it)->line));
-        model->setItem(i,1,item);
-        item = new QStandardItem(QString::number((it)->col));
-        model->setItem(i,2,item);
-        item = new QStandardItem(QString::fromLocal8Bit((it)->message));
-        model->setItem(i,3,item);*/
         i++;
      }
         ui->tableView_2->setModel(model1);
@@ -243,7 +226,28 @@ void Analyzer::showTetrads(std::list<Tetrad*> tetrads)
         ui->tableView_2->resizeColumnsToContents();
         ui->tableView_2->horizontalHeader()->setStretchLastSection(true);
         ui->tableView_2->setShowGrid(true);
-        ui->tableView_2->setGridStyle(Qt::DashLine);
+        ui->tableView_2->verticalHeader()->setVisible(false);
+}
+
+void Analyzer::showBasicBlocks(std::list<BasicBlock*> basicBlocks)
+{
+    QStandardItem* item = 0;
+     int i = 0;
+     for (auto& it:basicBlocks)
+     {
+        model2->insertRow(model2->rowCount());
+        QString BBInfo =  QString::fromStdString((it)->print());
+        item = new QStandardItem(BBInfo);
+        model2->setItem(i,0,item);
+        i++;
+     }
+        ui->tableView_4->setModel(model2);
+        ui->tableView_4->show();
+        ui->tableView_4->resizeColumnsToContents();
+        ui->tableView_4->resizeRowsToContents();
+        ui->tableView_4->horizontalHeader()->setStretchLastSection(true);
+        ui->tableView_4->setShowGrid(true);
+        ui->tableView_4->verticalHeader()->setVisible(false);
 }
 
 void Analyzer::errorBackground(std::list<int> lineNumbers)
@@ -258,7 +262,7 @@ void Analyzer::errorBackground(std::list<int> lineNumbers)
         cursor.select(QTextCursor::LineUnderCursor);
         ex.cursor = cursor;
         QTextCharFormat format;
-        format.setBackground(Qt::red);
+        format.setBackground(Qt::yellow);
         ex.cursor = cursor;
         ex.format = format;
         QList<QTextEdit::ExtraSelection>() << selection;
@@ -266,3 +270,17 @@ void Analyzer::errorBackground(std::list<int> lineNumbers)
     }
     ui->textEdit->setExtraSelections(selection);
 }
+
+void Analyzer::on_action_triggered()
+{
+    QString link="D:\\analyzer\\help.html";
+    QDesktopServices::openUrl(QUrl::fromLocalFile(link));
+}
+
+
+void Analyzer::on_action_2_triggered()
+{
+    QString link="D:\\analyzer\\about.html";
+    QDesktopServices::openUrl(QUrl::fromLocalFile(link));
+}
+
