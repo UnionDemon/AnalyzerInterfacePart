@@ -220,7 +220,6 @@ void Interpreter::handleSignedIntegerOverflow(Tetrad* tetrad)
 	{
 		error* e = new error();
 		e->type = errorType::nullPtrDereference;
-		//e->location = (static_cast<Stmt*>(tetrad->astNode))->getBeginLoc().printToString(g_ast_context->getSourceManager());
 		
 		if (tetrad->location) {
 			e->line = tetrad->location->line;
@@ -231,7 +230,6 @@ void Interpreter::handleSignedIntegerOverflow(Tetrad* tetrad)
 			e->col = -1;
 			e->file_name = std::string();
 		}
-
 
 		e->message = "Possible integer overflow";
 		errors.push_back(e);

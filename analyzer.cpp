@@ -25,6 +25,7 @@
 
 #include <sstream>
 
+#include <QMessageBox>
 #include <QDesktopServices>
 
 using namespace std;
@@ -114,26 +115,29 @@ Analyzer::Analyzer(QWidget *parent)
     , ui(new Ui::Analyzer)
 {
     ui->setupUi(this);
+
+    ui->pushButton->setVisible(false);
+
     model = new QStandardItemModel(0,4,this);
     model->setHeaderData(0, Qt::Horizontal, "File path");
     model->setHeaderData(1, Qt::Horizontal, "Line");
     model->setHeaderData(2, Qt::Horizontal, "Column");
     model->setHeaderData(3, Qt::Horizontal, "Message");
-    ui->tableView->setModel(model);
+    //ui->tableView->setModel(model);
 
     model1 = new QStandardItemModel(0,1,this);
     model1->setHeaderData(0, Qt::Horizontal, "Tetrad List");
-    ui->tableView_2->setModel(model1);
+    //ui->tableView_2->setModel(model1);
 
     model2 = new QStandardItemModel(0,1,this);
     model2->setHeaderData(0, Qt::Horizontal, "Basic Block List");
-    ui->tableView_4->setModel(model2);
+    //ui->tableView_4->setModel(model2);
 
     model3 = new QStandardItemModel(0,3,this);
     model3->setHeaderData(0, Qt::Horizontal, "From Basic Block");
     model3->setHeaderData(1, Qt::Horizontal, "To Basic Block");
     model3->setHeaderData(2, Qt::Horizontal, "To Basic Block");
-    ui->tableView_3->setModel(model3);
+    //ui->tableView_3->setModel(model3);
 }
 
 Analyzer::~Analyzer()
@@ -144,20 +148,20 @@ Analyzer::~Analyzer()
 
 void Analyzer::on_pushButton_2_clicked()
 {
-    QString file_name = QFileDialog::getOpenFileName(this,"Открыть","..","File c/c++ (*.cpp *.c)");
+    QString file_name = QFileDialog::getOpenFileName(this,"Open","..","File c/c++ (*.cpp *.c)");
 
     if(!file_name.isNull())
+    {
         this->ui->lineEdit->setText(file_name);
-
-}
-
-
-void Analyzer::on_pushButton_clicked()
-{
-    QString file_name = this->ui->lineEdit->text();
+    }
+    else
+    {
+        QMessageBox::warning(this, "Attention!","Select a file for analysis.");
+        return;
+    }
 
     QFile inputFile(file_name);
-    int i=1;
+    int i=0;
     if (inputFile.open(QIODevice::ReadOnly | QIODevice::Text))
     {
        QTextStream in(&inputFile);
@@ -165,13 +169,24 @@ void Analyzer::on_pushButton_clicked()
 
        while (!in.atEnd())
        {
-          code += QString::number(i)+'\t'+in.readLine()+'\n';
           i++;
+          code += QString::number(i)+'\t'+in.readLine()+'\n';
        }
        ui->textEdit->setText(code);
        inputFile.close();
     }
+    if (i == 0)
+    {
+        QMessageBox::warning(this, "Attention!","The file is empty!");
+        return;
+    }
+    ui->pushButton->setVisible(true);
+}
 
+
+void Analyzer::on_pushButton_clicked()
+{
+    QString file_name = this->ui->lineEdit->text();
     QByteArray arr = file_name.toLocal8Bit();
     const char * file = arr.constData();
 

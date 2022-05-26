@@ -243,18 +243,6 @@ void pseudoCodeGenerator::handleNullPtrCheck(BinaryOperator* bin_op, Tetrad* tet
 	result->setCompareType(compare);
 }
 
-/*void pseudoCodeGenerator::handleRecoveryExpr(RecoveryExpr* expr, Tetrad* tetrad, Operand* result)
-{
-	auto operandIt = tetrad->operands.begin();
-	if ((*operandIt)->getTypeOp() != OperandType::pointer) {
-		return;
-	}
-	std::string ptrName = (*operandIt)->getVarName();
-
-	result->setTypeOp(OperandType::pointer);
-	result->setVarName(ptrName);
-}*/
-
 void pseudoCodeGenerator::handleNullptrLiteral(CXXNullPtrLiteralExpr* st) {
 	Operand* result = new Operand(OperandSource::object, OperandType::nullptrLiteral, "", st);
 	operandsStack.push_back(result);
@@ -426,11 +414,6 @@ void pseudoCodeGenerator::handleValueStmt(ValueStmt* st)
 	{
 		handleNullPtrCheck(bin_op, tetrad, result);
 	}
-
-	/*if (RecoveryExpr* recovery_expr = dyn_cast<RecoveryExpr>(st))
-	{
-		handleRecoveryExpr(recovery_expr, tetrad, result);
-	}*/
 
 	operandsStack.push_back(result);
 }

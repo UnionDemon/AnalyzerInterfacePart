@@ -91,7 +91,7 @@ void* astComplement::findFirstSubtreeNode(void* node) {
     return nullptr;
 }
 
-// Возвращает true, если st можно превратить в тертаду
+// Возвращает true, если st можно превратить в тетраду
 bool astComplement::isConvertableToTetrad(void* node) {
 	if (isFakeNode(node)) {
 		return true;
@@ -125,8 +125,6 @@ bool astComplement::isConvertableToTetrad(void* node) {
 	if (SwitchCase* switch_case_st = dyn_cast<SwitchCase>(st)) {
 		return false;
 	}
-
-	//TODO: добавлять новые по мере обнаружения
 
 	return true;
 }

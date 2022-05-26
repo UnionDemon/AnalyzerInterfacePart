@@ -25,14 +25,14 @@
         <item>
          <widget class="QPushButton" name="pushButton_2">
           <property name="text">
-           <string>Открыть</string>
+           <string>Open</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QPushButton" name="pushButton">
           <property name="text">
-           <string>Пуск</string>
+           <string>Analyze</string>
           </property>
          </widget>
         </item>
@@ -45,7 +45,7 @@
         </property>
         <widget class="QWidget" name="tab">
          <attribute name="title">
-          <string>Анализатор</string>
+          <string> Analyzer</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
@@ -79,7 +79,7 @@
         </widget>
         <widget class="QWidget" name="tab_3">
          <attribute name="title">
-          <string>Псевдокод</string>
+          <string>Pseudocode</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_6">
           <item>
@@ -99,7 +99,7 @@
         </widget>
         <widget class="QWidget" name="tab_4">
          <attribute name="title">
-          <string>Граф потока управления</string>
+          <string>Control Flow Graph</string>
          </attribute>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
@@ -110,7 +110,7 @@
             <item>
              <widget class="QLabel" name="label">
               <property name="text">
-               <string>Базовые блоки</string>
+               <string>Basic Blocks</string>
               </property>
              </widget>
             </item>
@@ -130,7 +130,7 @@
             <item>
              <widget class="QLabel" name="label_2">
               <property name="text">
-               <string>Дуги (переходы)</string>
+               <string>Edges</string>
               </property>
              </widget>
             </item>
@@ -168,7 +168,7 @@
    </property>
    <widget class="QMenu" name="menu">
     <property name="title">
-     <string>Справка</string>
+     <string>Help</string>
     </property>
     <addaction name="action"/>
     <addaction name="action_2"/>
@@ -178,12 +178,12 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="action">
    <property name="text">
-    <string>Руководство пользователя</string>
+    <string>User manual</string>
    </property>
   </action>
   <action name="action_2">
    <property name="text">
-    <string>О программе</string>
+    <string>About program</string>
    </property>
   </action>
  </widget>

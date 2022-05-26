@@ -126,7 +126,6 @@ private:
 	void handleDeclRefExpr(DeclRefExpr* expr);
 	void handleImplicitCastExpr(ImplicitCastExpr* expr);
 	void handleNullPtrCheck(BinaryOperator* bin_op, Tetrad* tetrad, Operand* result);
-	//void handleRecoveryExpr(RecoveryExpr* expr, Tetrad* tetrad, Operand* result);
 	void handleAssignment(BinaryOperator* bin_op);
 	void handleAdd(BinaryOperator* bin_op);
 	void handleLessThanOrEqualTo(BinaryOperator* bin_op);
